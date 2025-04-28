@@ -1,0 +1,4 @@
+[submodule "kokkos"]
+	path = kokkos
+	url = https://github.com/WaldonChen/kokkos.git
+	branch = feat/sw64-parallel-reduce
