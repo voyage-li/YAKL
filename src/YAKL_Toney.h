@@ -1,4 +1,4 @@
-
+#if !defined(__sw_host__) && !defined(__sw_slave__)
 #pragma once
 
 #include <chrono>
@@ -304,3 +304,4 @@ namespace yakl {
 
 }
 
+#endif

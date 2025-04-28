@@ -8,7 +8,11 @@
 #include "YAKL_defines.h"
 #include "ArrayIR.h"
 #include "YAKL_LinearAllocator.h"
+#if !defined(__sw_host__) && !defined(__sw_slave__)
 #include "YAKL_Toney.h"
+#else
+#include "YAKL_sw_Timer.h"
+#endif
 #include "YAKL_Internal.h"
 #include "YAKL_timers.h"
 #include "YAKL_mutex.h"
