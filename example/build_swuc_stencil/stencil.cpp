@@ -74,7 +74,8 @@ void stencil2d5p(int N) {
     yakl::timer_stop("stencil2d5p serial");
     yakl::timer_start("stencil2d5p parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({1, N}, {1, N}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({1, 1}, {N + 1, N + 1}),
+        KOKKOS_LAMBDA(int i, int j) {
           b2(i, j) = randq0 * a(i, j) + randq1 * a(i - 1, j) + randq2 * a(i + 1, j) + randq3 * a(i, j - 1) + randq4 * a(i, j + 1);
         });
     Kokkos::fence();
@@ -113,7 +114,8 @@ void stencil2d9p(int N) {
     yakl::timer_stop("stencil2d9p serial");
     yakl::timer_start("stencil2d9p parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({1, N}, {1, N}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({1, 1}, {N + 1, N + 1}),
+        KOKKOS_LAMBDA(int i, int j) {
           b2(i, j) = randq0 * a(i, j) + randq1 * a(i - 1, j) + randq2 * a(i + 1, j) + randq3 * a(i, j - 1) +
                      randq4 * a(i, j + 1) + randq5 * a(i - 1, j - 1) + randq6 * a(i - 1, j + 1) + randq7 * a(i + 1, j - 1) + randq8 * a(i + 1, j + 1);
         });
@@ -158,7 +160,8 @@ void stencil3d7p(int N) {
     yakl::timer_stop("stencil3d7p serial");
     yakl::timer_start("stencil3d7p parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<3>({1, N}, {1, N}, {1, N}), KOKKOS_LAMBDA(int i, int j, int k) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<3>>({1, 1, 1}, {N + 1, N + 1, N + 1}),
+        KOKKOS_LAMBDA(int i, int j, int k) {
           b2(i, j, k) = randq0 * a(i, j, k) + randq1 * a(i - 1, j, k) + randq2 * a(i + 1, j, k) +
                         randq3 * a(i, j - 1, k) + randq4 * a(i, j + 1, k) +
                         randq5 * a(i, j, k - 1) + randq6 * a(i, j, k + 1);
@@ -216,7 +219,8 @@ void stencil3d27p(int N) {
     yakl::timer_stop("stencil3d27p serial");
     yakl::timer_start("stencil3d27p parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<3>({1, N}, {1, N}, {1, N}), KOKKOS_LAMBDA(int i, int j, int k) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<3>>({1, 1, 1}, {N + 1, N + 1, N + 1}),
+        KOKKOS_LAMBDA(int i, int j, int k) {
           b2(i, j, k) = randq0 * a(i, j, k) + randq1 * a(i - 1, j, k) + randq2 * a(i + 1, j, k) +
                         randq3 * a(i, j - 1, k) + randq4 * a(i, j + 1, k) +
                         randq5 * a(i, j, k - 1) + randq6 * a(i, j, k + 1) +
@@ -270,7 +274,8 @@ void heat2d(int N) {
     yakl::timer_stop("heat-2d serial");
     yakl::timer_start("heat-2d parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({1, N}, {1, N}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({1, 1}, {N + 1, N + 1}),
+        KOKKOS_LAMBDA(int i, int j) {
           b2(i, j) = 0.125 * (a(i + 1, j) - 2.0 * a(i, j) + a(i - 1, j)) +
                      0.125 * (a(i, j + 1) - 2.0 * a(i, j) + a(i, j - 1)) +
                      a(i, j);
@@ -310,7 +315,8 @@ void jacobi2d(int N) {
     yakl::timer_stop("jacobi-2d serial");
     yakl::timer_start("jacobi-2d parallel");
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({2, N - 1}, {2, N - 1}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({2, 2}, {N - 1, N - 1}),
+        KOKKOS_LAMBDA(int i, int j) {
           b2(i, j) = 0.2 * (a(i, j) + a(i, j - 1) + a(i, j + 1) + a(i + 1, j) + a(i - 1, j));
         });
     Kokkos::fence();
@@ -375,14 +381,16 @@ void fdtd2d(int N, int NY) {
     Kokkos::fence();
 
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({0, N - 1}, {0, NY - 1}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({0, 0}, {N, NY}),
+        KOKKOS_LAMBDA(int i, int j) {
           if (i >= 1) ey2(i, j) = ey2(i, j) - 0.5 * (hz2(i, j) - hz2(i - 1, j));
           if (j >= 1) ex2(i, j) = ex2(i, j) - 0.5 * (hz2(i, j) - hz2(i, j - 1));
         });
     Kokkos::fence();
 
     yakl::c::parallel_for(
-        yakl::c::Bounds<2>({0, N - 1}, {0, NY - 1}), KOKKOS_LAMBDA(int i, int j) {
+        Kokkos::MDRangePolicy<Kokkos::Rank<2>>({0, 0}, {N, NY}),
+        KOKKOS_LAMBDA(int i, int j) {
           hz2(i, j) = hz2(i, j) - 0.7 * (ex2(i, j + 1) - ex2(i, j) + ey2(i + 1, j) - ey2(i, j));
         });
     Kokkos::fence();

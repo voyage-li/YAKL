@@ -63,6 +63,15 @@ inline void parallel_for( std::string str , Bounds<N,simple> const &bounds , F c
   #endif
 }
 
+template <class F, class... Traits>
+inline void parallel_for(std::string str ,Kokkos::MDRangePolicy<Traits...> policy, F const &f ) {
+  Kokkos::parallel_for(str, policy, f);
+}
+template <class F, class... Traits>
+inline void parallel_for(Kokkos::MDRangePolicy<Traits...> policy, F const &f ) {
+  parallel_for(YAKL_AUTO_LABEL(), policy, f);
+}
+
 template <class F, int N, bool simple>
 inline void parallel_for( Bounds<N,simple> const &bounds , F const &f ) {
   parallel_for( YAKL_AUTO_LABEL() , bounds , f );
